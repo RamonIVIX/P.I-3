@@ -7,7 +7,7 @@ from email.mime.multipart import MIMEMultipart
 def enviar_email(assunto, corpo, destinatario):
     remetente = "ramonaraujoU@gmail.com"
     senha = "lxyo jawp gkbq rnkg"
-    destinatario = "ramon.ivix@gmail.com"
+    destinatario = "secretaria.teste.pi@gmail.com"
     msg = MIMEMultipart()
     msg['From'] = remetente
     msg['To'] = destinatario
@@ -142,7 +142,7 @@ def responder(mensagem):
             response = (f"Informações do Aluno:\n"
                         f"Nome: {nome_alu}\n"
                         f"Data de Nascimento: {data_nascimento_alu}\n"
-                        f"CPF: {cpf_alu}\n"
+                        #f"CPF: {cpf_alu}\n"
                         f"Responsável: {nome_responsavel_alu}\n"
                         f"Documento: {documento_alu}")
         else:
@@ -153,7 +153,7 @@ def responder(mensagem):
         texto = """
         Clique na opção que condiz com sua necessidade:
     
-    OBS - *Quando clicar nas opções "segunda" ou "terceira", comece com seu nome completo e depois digite o conteúdo na mesma mensagem.*
+    OBS - *Quando clicar nas opções "segunda" ou "terceira", comece com seu nome completo e número de telefone, depois digite o conteúdo na mesma mensagem.*
 
         /primeira - Consultar dados do aluno que você é responsável
         /segunda - Relatar um problema 
