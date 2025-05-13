@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Página Inicial</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Bem-vindo(a), Aluno(a)</h1>
+        {% if re_alu %}
+            <p>RE do Aluno: {{ re_alu }}</p>
+            {% else %}
+            <p>Você não está autenticado.</p>
+        {% endif %}
+        <h2>Suas Informações:</h2>
+        <ul>
+            <li>Nenhuma pendência no momento.</li>
+        </ul>
+    </div>
+</body>
+</html>
+
+<script>
+    axe.run(function(err, results) {
+      if (err) throw err;
+      console.log(results);
+      // Aqui você pode logar ou mostrar os problemas de acessibilidade encontrados
+    });
+  </script>
+  

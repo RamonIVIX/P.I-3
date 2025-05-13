@@ -1,0 +1,31 @@
+<form id="pesquisaForm">
+    <input type="text" id="nomeAluno" placeholder="Nome do Aluno" required />
+    <input type="text" id="matricula" placeholder="Matrícula" required />
+    <button type="submit">Pesquisar</button>
+  </form>
+  
+  <script>
+    document.getElementById('pesquisaForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const nome = document.getElementById('nomeAluno').value.trim();
+      const matricula = document.getElementById('matricula').value.trim();
+  
+      if (!nome || !matricula) {
+        alert('Preencha todos os campos.');
+        return;
+      }
+  
+      // Simula busca
+      alert(`Buscando dados de ${nome} (Matrícula: ${matricula})...`);
+      // Redirecionamento ou carregamento dinâmico poderiam ir aqui
+      // window.location.href = `/pendencias/${matricula}`;
+    });
+  
+    if (typeof axe !== 'undefined') {
+      axe.run(function (err, results) {
+        if (err) throw err;
+        console.log(results);
+      });
+    }
+  </script>
+  

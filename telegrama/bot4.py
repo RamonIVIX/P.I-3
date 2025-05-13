@@ -155,7 +155,7 @@ def responder(mensagem):
     
     OBS - *Quando clicar nas opções "segunda" ou "terceira", comece com seu nome completo e número de telefone, depois digite o conteúdo na mesma mensagem.*
 
-        /primeira - Consultar dados do aluno que você é responsável
+        /primeira - Consultar dados do aluno que você é resposnsável
         /segunda - Relatar um problema 
         /terceira - Outro tipo de solicitação"""
         bot.reply_to(mensagem, texto)
