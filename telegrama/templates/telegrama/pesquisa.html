@@ -1,31 +1,65 @@
-<form id="pesquisaForm">
-    <input type="text" id="nomeAluno" placeholder="Nome do Aluno" required />
-    <input type="text" id="matricula" placeholder="Matrícula" required />
-    <button type="submit">Pesquisar</button>
-  </form>
-  
-  <script>
-    document.getElementById('pesquisaForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const nome = document.getElementById('nomeAluno').value.trim();
-      const matricula = document.getElementById('matricula').value.trim();
-  
-      if (!nome || !matricula) {
-        alert('Preencha todos os campos.');
-        return;
-      }
-  
-      // Simula busca
-      alert(`Buscando dados de ${nome} (Matrícula: ${matricula})...`);
-      // Redirecionamento ou carregamento dinâmico poderiam ir aqui
-      // window.location.href = `/pendencias/${matricula}`;
-    });
-  
-    if (typeof axe !== 'undefined') {
-      axe.run(function (err, results) {
-        if (err) throw err;
-        console.log(results);
-      });
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="{% static 'styles.css' %}" />
+  <title>Resultado da Pesquisa</title>
+  <style>
+    /* Estilo do botão de acessibilidade */
+    #acessibilidade-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 1000;
     }
+    #acessibilidade-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Resultado da Pesquisa</h1>
+
+    <p><strong>Nome:</strong> {{ aluno.nome_alu }}</p>
+    <p><strong>Matrícula:</strong> {{ aluno.re_alu }}</p>
+    <p><strong>Documento:</strong> {{ aluno.documento_alu }}</p>
+    <p><strong>Status:</strong>
+      {% if documentos_status == 'Documentos: OK' %}
+        <span style="color: green;">{{ documentos_status }}</span>
+      {% else %}
+        <span style="color: red;">{{ documentos_status }}</span>
+      {% endif %}
+    </p>
+
+    <br />
+    <a href="{% url 'home' %}">
+      <button>Voltar</button>
+    </a>
+  </div>
+
+  <!-- Botão de acessibilidade -->
+  <button id="acessibilidade-btn" title="Ler conteúdo da página" aria-label="Ler conteúdo da página">🔊</button>
+
+  <script>
+    const btn = document.getElementById('acessibilidade-btn');
+    btn.addEventListener('click', () => {
+      const texto = document.querySelector('.container').innerText;
+      const utterance = new SpeechSynthesisUtterance(texto);
+      speechSynthesis.cancel(); // Para qualquer leitura que estiver rolando
+      speechSynthesis.speak(utterance);
+    });
   </script>
-  
+</body>
+</html>

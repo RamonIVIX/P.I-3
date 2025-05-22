@@ -1,28 +1,42 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="{% static 'styles.css' %}" />
+  <title>Login</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Login</h1>
-        <form method="post" action="{% url 'login' %}">
-            {% csrf_token %}  <input type="text" name="re_alu" placeholder="RE do Aluno" required>
-            <input type="password" name="senha" placeholder="Senha" required>
-            <button type="submit">Entrar</button>
-        </form>
-    </div>
-</body>
-</html>
+  <div class="container">
+    <h1>Login</h1>
+    <form id="loginForm" method="post">
+      {% csrf_token %}
+      <input type="text" id="usuarioInput" name="usuario" placeholder="Usuário" required />
+      <input type="password" id="senhaInput" name="senha" placeholder="Senha" required />
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
 
-<script>
-    axe.run(function(err, results) {
-      if (err) throw err;
-      console.log(results);
-      // mostrar os problemas de acessibilidade encontrados
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const usuario = document.getElementById('usuarioInput').value.trim();
+      const senha = document.getElementById('senhaInput').value.trim();
+
+      if (!usuario || !senha) {
+        alert('Preencha todos os campos.');
+        return;
+      }
+
+      if (usuario === 'admin' && senha === 'univesp-pi3') {
+        alert('Login bem-sucedido!');
+        window.location.href = '/home/';
+      } else {
+        alert('Usuário ou senha inválidos.');
+      }
     });
   </script>
-  
+</body>
+</html>
