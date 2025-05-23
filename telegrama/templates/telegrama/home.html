@@ -6,10 +6,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="{% static 'styles.css' %}" />
   <title>Home</title>
+  <style>
+    body {
+      background-color: #0080ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      width: 320px;
+    }
+    .container img {
+      max-width: 150px;
+      margin-bottom: 20px;
+    }
+    .container input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .container button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .container h1, .container h2 {
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h1>Bem-vindo</h1>
+    <img src="{% static 'logo.png' %}" alt="Logo da Escola" />
+    <h2>Bem-vindo</h2>
 
     {% if erro %}
       <p style="color: red;">{{ erro }}</p>

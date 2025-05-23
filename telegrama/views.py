@@ -2,17 +2,36 @@ from django.shortcuts import render, redirect
 from rest_framework import viewsets
 from .models import Aluno
 from .serializers import AlunoSerializer
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
+
 
 # ViewSet para API REST do modelo Aluno
 class AlunoViewSet(viewsets.ModelViewSet):
     queryset = Aluno.objects.all()
     serializer_class = AlunoSerializer
 
-# Página de login do aluno (validação simples)
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        senha = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=senha)
+        if user is not None:
+            login(request, user)
+            return redirect('home')  # nome da URL da home_view
+        else:
+            return render(request, 'telegrama/login.html', {'erro': 'Usuário ou senha inválidos.'})
+
+    return render(request, 'telegrama/login.html')
+
+
+@login_required
 def home_view(request):
     if request.method == 'POST':
         nome = request.POST.get('nome', '').strip()
-        re = request.POST.get('re', '').strip()  # campo "re"
+        re = request.POST.get('re', '').strip()
         senha = request.POST.get('senha', '').strip()
 
         if not nome or not re or not senha:
@@ -21,13 +40,12 @@ def home_view(request):
         try:
             aluno = Aluno.objects.get(re_alu=re)
         except Aluno.DoesNotExist:
-            return render(request, 'telegrama/home.html', {'erro': 'Dados inválidos.'})
+            # Aqui manda a mensagem correta sem quebrar
+            return render(request, 'telegrama/home.html', {'erro': 'Aluno não encontrado.'})
 
-        # Verifica se o nome bate ignorando maiúsculas/minúsculas
         if aluno.nome_alu.lower() != nome.lower():
-            return render(request, 'telegrama/home.html', {'erro': 'Dados inválidos.'})
+            return render(request, 'telegrama/home.html', {'erro': 'Aluno não encontrado.'})
 
-        # Limpa o CPF para ter só números e compara os 4 primeiros dígitos
         cpf_limpo = ''.join(filter(str.isdigit, aluno.cpf_alu or ''))
         if senha == cpf_limpo[:4]:
             request.session['aluno_id'] = aluno.re_alu
@@ -37,7 +55,10 @@ def home_view(request):
 
     return render(request, 'telegrama/home.html')
 
-# Página de pesquisa / exibição do status dos documentos
+
+
+
+@login_required
 def pesquisa_view(request):
     aluno_id = request.session.get('aluno_id')
     if not aluno_id:
@@ -48,7 +69,6 @@ def pesquisa_view(request):
     except Aluno.DoesNotExist:
         return redirect('home')
 
-    # Avalia status do documento
     documento_status = aluno.documento_alu.strip().lower() if aluno.documento_alu else ''
     if documento_status == 'ok':
         mensagem = "Documentos: OK"
@@ -59,7 +79,3 @@ def pesquisa_view(request):
         'aluno': aluno,
         'documentos_status': mensagem,
     })
-
-# Página de login do admin (apenas renderiza o template)
-def login_view(request):
-    return render(request, 'telegrama/login.html')

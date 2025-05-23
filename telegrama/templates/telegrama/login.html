@@ -6,37 +6,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="{% static 'styles.css' %}" />
   <title>Login</title>
+  <style>
+    body {
+      background-color: #0080ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      width: 320px;
+    }
+    .container img {
+      max-width: 150px;
+      margin-bottom: 20px;
+    }
+    .container h1 {
+      margin-bottom: 10px;
+    }
+    .container input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .container button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .container p {
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
+    <img src="{% static 'logo.png' %}" alt="Logo da Escola" />
     <h1>Login</h1>
-    <form id="loginForm" method="post">
+    <form method="post">
       {% csrf_token %}
-      <input type="text" id="usuarioInput" name="usuario" placeholder="Usuário" required />
-      <input type="password" id="senhaInput" name="senha" placeholder="Senha" required />
+      <input type="text" name="username" placeholder="Usuário" required />
+      <input type="password" name="password" placeholder="Senha" required />
       <button type="submit">Entrar</button>
     </form>
+
+    {% if erro %}
+      <p style="color: red;">{{ erro }}</p>
+    {% endif %}
   </div>
-
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const usuario = document.getElementById('usuarioInput').value.trim();
-      const senha = document.getElementById('senhaInput').value.trim();
-
-      if (!usuario || !senha) {
-        alert('Preencha todos os campos.');
-        return;
-      }
-
-      if (usuario === 'admin' && senha === 'univesp-pi3') {
-        alert('Login bem-sucedido!');
-        window.location.href = '/home/';
-      } else {
-        alert('Usuário ou senha inválidos.');
-      }
-    });
-  </script>
 </body>
 </html>

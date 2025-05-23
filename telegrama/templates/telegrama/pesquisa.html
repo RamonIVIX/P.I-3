@@ -7,7 +7,43 @@
   <link rel="stylesheet" href="{% static 'styles.css' %}" />
   <title>Resultado da Pesquisa</title>
   <style>
-    /* Estilo do botão de acessibilidade */
+    body {
+      background-color: #0080ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      width: 350px;
+    }
+    .container img {
+      max-width: 150px;
+      margin-bottom: 20px;
+    }
+    .container h1 {
+      margin-bottom: 20px;
+    }
+    .container p {
+      text-align: left;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    .container button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
     #acessibilidade-btn {
       position: fixed;
       bottom: 20px;
@@ -30,6 +66,7 @@
 </head>
 <body>
   <div class="container">
+    <img src="{% static 'logo.png' %}" alt="Logo da Escola" />
     <h1>Resultado da Pesquisa</h1>
 
     <p><strong>Nome:</strong> {{ aluno.nome_alu }}</p>
@@ -57,7 +94,7 @@
     btn.addEventListener('click', () => {
       const texto = document.querySelector('.container').innerText;
       const utterance = new SpeechSynthesisUtterance(texto);
-      speechSynthesis.cancel(); // Para qualquer leitura que estiver rolando
+      speechSynthesis.cancel(); // Para parar qualquer leitura anterior
       speechSynthesis.speak(utterance);
     });
   </script>

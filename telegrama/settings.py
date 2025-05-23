@@ -20,7 +20,7 @@ SECRET_KEY = 'django-insecure-%zwb__s&lpe2eepd%ojwh8+atndjzih7=$c_tf478%ph7=uihd
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['p-i-2-1.onrender.com', 'localhost', '127.0.0.1']
 
 
 
@@ -36,6 +36,16 @@ INSTALLED_APPS = [
     'rest_framework',
     'telegrama',
 ]
+
+LOGIN_URL = '/login/' 
+
+# Sessão dura 15 segundos
+SESSION_COOKIE_AGE = 3600
+
+# Se quiser que expire só depois desse tempo, deixa false
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
