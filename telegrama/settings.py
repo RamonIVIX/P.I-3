@@ -6,8 +6,16 @@ Django settings for telegrama project.
 from pathlib import Path
 
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+import os
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # importante para o Render
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # opcional, se você usa /static/
+
 
 STATIC_URL = 'static/'
 
