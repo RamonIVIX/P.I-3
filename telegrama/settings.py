@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-%zwb__s&lpe2eepd%ojwh8+atndjzih7=$c_tf478%ph7=uihd
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['p-i-2-1.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['p-i-2-1.onrender.com','p-i-3-1.onrender.com', 'localhost', '127.0.0.1']
 
 
 
