@@ -1,81 +1,92 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework import status
 from .models import Aluno
 from .serializers import AlunoSerializer
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
 
-
-# ViewSet para API REST do modelo Aluno
 class AlunoViewSet(viewsets.ModelViewSet):
     queryset = Aluno.objects.all()
     serializer_class = AlunoSerializer
 
+# Login API + template
+class LoginAPIView(APIView):
+    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
+    template_name = 'telegrama/login.html'
 
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        senha = request.POST.get('password')
+    def get(self, request):
+        return Response()
 
-        user = authenticate(request, username=username, password=senha)
-        if user is not None:
-            login(request, user)
-            return redirect('home')  # nome da URL da home_view
-        else:
-            return render(request, 'telegrama/login.html', {'erro': 'Usuário ou senha inválidos.'})
+    def post(self, request):
+        username = request.data.get('username', '').strip()
+        password = request.data.get('password', '').strip()
 
-    return render(request, 'telegrama/login.html')
+        if username == 'admin' and password == 'univesp-pi3':
+            request.session['admin_logged_in'] = True
+            return redirect('home')
 
+        return Response({'erro': 'Usuário ou senha incorretos.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-@login_required
-def home_view(request):
-    if request.method == 'POST':
-        nome = request.POST.get('nome', '').strip()
-        re = request.POST.get('re', '').strip()
-        senha = request.POST.get('senha', '').strip()
+# Verifica (Home) API + template
+class VerificaAlunoAPIView(APIView):
+    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
+    template_name = 'telegrama/home.html'
+
+    def get(self, request):
+        return Response()
+
+    def post(self, request):
+        nome = request.data.get('nome', '').strip()
+        re = request.data.get('re', '').strip()
+        senha = request.data.get('senha', '').strip()
 
         if not nome or not re or not senha:
-            return render(request, 'telegrama/home.html', {'erro': 'Todos os campos são obrigatórios.'})
+            return Response({'erro': 'Todos os campos são obrigatórios.'}, template_name=self.template_name, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             aluno = Aluno.objects.get(re_alu=re)
         except Aluno.DoesNotExist:
-            # Aqui manda a mensagem correta sem quebrar
-            return render(request, 'telegrama/home.html', {'erro': 'Aluno não encontrado.'})
+            return Response({'erro': 'Aluno não encontrado.'}, template_name=self.template_name, status=status.HTTP_404_NOT_FOUND)
 
         if aluno.nome_alu.lower() != nome.lower():
-            return render(request, 'telegrama/home.html', {'erro': 'Aluno não encontrado.'})
+            return Response({'erro': 'Aluno não encontrado.'}, template_name=self.template_name, status=status.HTTP_404_NOT_FOUND)
 
         cpf_limpo = ''.join(filter(str.isdigit, aluno.cpf_alu or ''))
         if senha == cpf_limpo[:4]:
             request.session['aluno_id'] = aluno.re_alu
-            return redirect('pesquisa')
+
+            # Calcula status do documento aqui também
+            doc = (aluno.documento_alu or "").strip().lower()
+            if doc == "ok":
+                documentos_status = "Sem pendências"
+            else:
+                documentos_status = "Cadastro incompleto"
+
+            return Response({'aluno': aluno, 'documentos_status': documentos_status}, template_name='telegrama/pesquisa.html')
         else:
-            return render(request, 'telegrama/home.html', {'erro': 'Senha incorreta.'})
+            return Response({'erro': 'Senha incorreta.'}, template_name=self.template_name, status=status.HTTP_401_UNAUTHORIZED)
 
-    return render(request, 'telegrama/home.html')
+# Pesquisa API + template
+class PesquisaAPIView(APIView):
+    renderer_classes = [JSONRenderer, TemplateHTMLRenderer]
+    template_name = 'telegrama/pesquisa.html'
 
+    def get(self, request):
+        aluno_id = request.session.get('aluno_id')
+        if not aluno_id:
+            return redirect('home')
 
+        try:
+            aluno = Aluno.objects.get(re_alu=aluno_id)
+        except Aluno.DoesNotExist:
+            return redirect('home')
 
+        doc = (aluno.documento_alu or "").strip().lower()
+        if doc == "ok":
+            documentos_status = "Sem pendências"
+        else:
+            documentos_status = "Cadastro incompleto"
 
-@login_required
-def pesquisa_view(request):
-    aluno_id = request.session.get('aluno_id')
-    if not aluno_id:
-        return redirect('home')
-
-    try:
-        aluno = Aluno.objects.get(re_alu=aluno_id)
-    except Aluno.DoesNotExist:
-        return redirect('home')
-
-    documento_status = aluno.documento_alu.strip().lower() if aluno.documento_alu else ''
-    if documento_status == 'ok':
-        mensagem = "Documentos: OK"
-    else:
-        mensagem = "Documentos: pendentes"
-
-    return render(request, 'telegrama/pesquisa.html', {
-        'aluno': aluno,
-        'documentos_status': mensagem,
-    })
+        return Response({'aluno': aluno, 'documentos_status': documentos_status})

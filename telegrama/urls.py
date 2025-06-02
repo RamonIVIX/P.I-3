@@ -1,13 +1,19 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import login_view, home_view, pesquisa_view, AlunoViewSet
+from .views import (
+    AlunoViewSet,
+    LoginAPIView, VerificaAlunoAPIView, PesquisaAPIView
+)
 
 router = DefaultRouter()
 router.register(r'alunos', AlunoViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),  # API REST
-    path('login/', login_view, name='login'),
-    path('home/', home_view, name='home'),         # login
-    path('pesquisa/', pesquisa_view, name='pesquisa'),  # página com dados do aluno
+    # Rotas REST para o modelo Aluno (CRUD)
+    path('api/', include(router.urls)),
+
+    # Rotas para páginas HTML com Django REST Framework + TemplateHTMLRenderer
+    path('login/', LoginAPIView.as_view(), name='login'),
+    path('home/', VerificaAlunoAPIView.as_view(), name='home'),
+    path('pesquisa/', PesquisaAPIView.as_view(), name='pesquisa'),
 ]
